@@ -165,14 +165,16 @@ export default function AuthScreen() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-white/70 mt-8 [text-shadow:0_1px_12px_rgba(15,23,42,0.25)]">
-          {t('auth.footerNote')}
-        </p>
-        {mode === 'login' && (
-          <p className="text-center text-xs text-white/80 mt-3 max-w-md mx-auto [text-shadow:0_1px_12px_rgba(15,23,42,0.25)]">
-            {t('auth.demoAdmin')}
+        <div className="mt-8 rounded-xl border border-white/20 bg-slate-950/70 px-4 py-3.5 shadow-[0_8px_32px_rgba(15,23,42,0.35)] backdrop-blur-md">
+          <p className="text-center text-xs leading-relaxed text-slate-100 sm:text-sm">
+            {t('auth.footerNote')}
           </p>
-        )}
+          {mode === 'login' && (
+            <p className="text-center text-xs leading-relaxed text-slate-200 sm:text-sm mt-2.5 pt-2.5 border-t border-white/10">
+              {t('auth.demoAdmin')}
+            </p>
+          )}
+        </div>
       </motion.div>
     </div>
   );
