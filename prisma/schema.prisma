@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  passwordHash   String
+  displayName    String?
+  monthlyIncome  Float    @default(8450)
+  avatarFilename String?
+  isAdmin        Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscriptions   Subscription[]
+  reconciliations ReconciliationRecord[]
+}
+
+model SkyAsset {
+  score    Int    @id
+  filename String
+}
+
+model Subscription {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  category     String
+  amount       Float
+  billingCycle BillingCycle
+  billingStart DateTime
+  icon         String       @default("palette")
+  archived     Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+}
+
+enum BillingCycle {
+  Weekly
+  Monthly
+  Yearly
+}
+
+model ReconciliationRecord {
+  id          String                 @id @default(cuid())
+  userId      String
+  user        User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year        Int
+  month       Int
+  projected   Float
+  realBalance Float
+  status      ReconciliationStatus
+  recordedAt  DateTime               @default(now())
+
+  @@unique([userId, year, month])
+}
+
+enum ReconciliationStatus {
+  Balanced
+  Adjusted
+  PerfectMatch
+}

@@ -1,0 +1,16 @@
+# Local PostgreSQL for Prisma (replaces SQLite file DB)
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: clutcher
+      POSTGRES_PASSWORD: clutcher
+      POSTGRES_DB: clutcher
+    ports:
+      - '5432:5432'
+    volumes:
+      - clutcher_pg:/var/lib/postgresql/data
+
+volumes:
+  clutcher_pg:

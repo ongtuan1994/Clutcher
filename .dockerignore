@@ -1,0 +1,17 @@
+node_modules
+dist
+.git
+.env
+.env.*
+!.env.example
+*.db
+*.db-journal
+uploads
+coverage
+.vscode
+.cursor
+README.md
+docs
+firebase.json
+.firebaserc
+cloudbuild.yaml

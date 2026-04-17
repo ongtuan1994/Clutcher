@@ -1,0 +1,12 @@
+node_modules/
+build/
+dist/
+coverage/
+uploads/
+prisma/*.db
+prisma/*.db-journal
+.DS_Store
+*.log
+.env*
+!.env.example
+.firebase/

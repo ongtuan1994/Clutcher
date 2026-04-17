@@ -1,0 +1,42 @@
+# Cloud Build → Artifact Registry → (optional) Cloud Run deploy
+# Set substitutions in the trigger: _REGION, _REPO, _SERVICE
+substitutions:
+  _REGION: asia-southeast1
+  _REPO: clutcher
+  _SERVICE: clutcher-api
+  _IMAGE_NAME: api
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}:$SHORT_SHA'
+      - '-t'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}:latest'
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - '--all-tags'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}'
+
+  # Uncomment after Artifact Registry & Cloud Run are configured:
+  # - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  #   entrypoint: gcloud
+  #   args:
+  #     - run
+  #     - deploy
+  #     - ${_SERVICE}
+  #     - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}:$SHORT_SHA'
+  #     - '--region=${_REGION}'
+  #     - '--platform=managed'
+  #     - '--allow-unauthenticated'
+  #     - '--set-secrets=DATABASE_URL=clutcher-database-url:latest,JWT_SECRET=clutcher-jwt-secret:latest'
+
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}'
