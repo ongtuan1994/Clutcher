@@ -26,10 +26,15 @@ if (!isGcsConfigured()) {
   fs.mkdirSync(skyDir, { recursive: true });
 }
 
-const corsOrigins = process.env.CORS_ORIGIN?.split(',').map((s) => s.trim()).filter(Boolean);
+// CORS_ORIGIN=* must NOT become the literal list ['*'] — browsers send Origin: https://host
+// and node-cors only matches exact strings, so '*' never matches → "Failed to fetch".
+// Treat lone * (or unset) as "reflect request origin" (same as dev with credentials).
+const corsParts = process.env.CORS_ORIGIN?.split(',').map((s) => s.trim()).filter(Boolean) ?? [];
+const corsReflectAny =
+  corsParts.length === 0 || (corsParts.length === 1 && corsParts[0] === '*');
 app.use(
   cors({
-    origin: corsOrigins?.length ? corsOrigins : true,
+    origin: corsReflectAny ? true : corsParts,
     credentials: true,
   }),
 );
