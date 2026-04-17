@@ -704,7 +704,9 @@ app.post(
   },
 );
 
-// --- Static SPA in production ---
+// --- Static SPA in production (image includes `dist`) ---
+// API-only images (e.g. Cloud Run Dockerfile) have no `dist`; expose GET / so probes and
+// `curl https://…run.app/` return 200 instead of 404 warnings in logs.
 const dist = path.join(process.cwd(), 'dist');
 if (fs.existsSync(dist)) {
   app.use(express.static(dist, { index: false }));
@@ -714,6 +716,15 @@ if (fs.existsSync(dist)) {
       return;
     }
     res.sendFile(path.join(dist, 'index.html'));
+  });
+} else {
+  app.get('/', (_req, res) => {
+    res.json({
+      service: 'clutcher-api',
+      ok: true,
+      message: 'API only (no static frontend in this container). Use /api/* routes.',
+      health: '/api/health',
+    });
   });
 }
 

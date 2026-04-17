@@ -51,7 +51,7 @@ Connect your repo to **Cloud Build Triggers** and point them at `cloudbuild.yaml
 
 Local alternative: `docker compose up -d` and use:
 
-`DATABASE_URL=postgresql://clutcher:clutcher@localhost:5432/clutcher`
+`DATABASE_URL=postgresql://clutcher:clutcher@localhost:5433/clutcher` (Compose maps host **5433** → container 5432.)
 
 Then run migrations:
 
