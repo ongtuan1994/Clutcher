@@ -41,9 +41,11 @@ Connect your repo to **Cloud Build Triggers** and point them at `cloudbuild.yaml
 
 1. Create a **PostgreSQL** instance (e.g. v16, region aligned with Cloud Run).  
 2. Create database + user; note the password.  
-3. For **Cloud Run → Cloud SQL**, use the **Unix socket** connection string (recommended):
+3. For **Cloud Run → Cloud SQL**, use the **Unix socket** connection string (recommended). Prisma rejects `...@/DBNAME` (“empty host”, **P1013**); use **`localhost`** as the hostname so the URL parses correctly—the `?host=/cloudsql/...` value is what directs traffic to the socket:
 
-   `postgresql://USER:PASSWORD@/DBNAME?host=/cloudsql/PROJECT_ID:REGION:INSTANCE_NAME`
+   `postgresql://USER:PASSWORD@localhost/DBNAME?host=/cloudsql/PROJECT_ID:REGION:INSTANCE_NAME`
+
+   URL-encode special characters in `USER` or `PASSWORD` (e.g. `@` → `%40`).
 
 4. Store `DATABASE_URL` in **Secret Manager** and mount it on Cloud Run as an environment variable or secret.
 
@@ -81,6 +83,20 @@ gcloud run deploy clutcher-api \
   - Cloud SQL Client  
   - Secret Manager access (if using secrets)  
   - `roles/storage.objectAdmin` on the uploads bucket (if using GCS)
+
+### Troubleshooting: “failed to start and listen on PORT=8080”
+
+Cloud Run waits for the process to accept traffic on `PORT` (default **8080**). If the revision fails with that message, common causes in this repo are:
+
+1. **`DATABASE_URL` (Secret Manager) and Cloud SQL** — When you pass `--add-cloudsql-instances`, use the **Unix socket** form with **`@localhost/`** (not `@/`). Prisma otherwise throws **P1013** (“empty host”) and the container exits before listening. Example:
+
+   `postgresql://USER:PASSWORD@localhost/DBNAME?host=/cloudsql/PROJECT_ID:REGION:INSTANCE_NAME`
+
+   A TCP URL to a public IP often does not work from Cloud Run (or makes `prisma migrate deploy` hang). Update the secret, then redeploy.
+
+2. **Listen address** — The API must bind **all interfaces** (`0.0.0.0`), not only loopback. This repo’s `server/index.ts` uses `app.listen(PORT, '0.0.0.0', …)` for Cloud Run. After changing server code, **rebuild the image, push to Artifact Registry, and deploy again**.
+
+3. **More time** — If migrations or cold start are slow, increase startup behavior (e.g. [startup CPU boost](https://cloud.google.com/run/docs/configuring/services/cpu#startup-boost), longer request/startup timeout) per [Cloud Run troubleshooting](https://cloud.google.com/run/docs/troubleshooting#container-failed-to-start).
 
 ---
 

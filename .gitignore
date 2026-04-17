@@ -10,3 +10,5 @@ prisma/*.db-journal
 .env*
 !.env.example
 .firebase/
+# Local Cloud SQL Auth Proxy (Windows); do not commit binaries
+cloud-sql-proxy*.exe

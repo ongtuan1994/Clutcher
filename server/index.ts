@@ -717,7 +717,7 @@ if (fs.existsSync(dist)) {
   });
 }
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   void (async () => {
     try {
       await prisma.$connect();
@@ -730,7 +730,7 @@ const server = app.listen(PORT, () => {
     }
     await ensureBootstrapAdmin().catch((e) => console.error('[bootstrap]', e));
   })();
-  console.log(`API listening on http://localhost:${PORT}`);
+  console.log(`API listening on http://0.0.0.0:${PORT}`);
 });
 server.on('error', (err: NodeJS.ErrnoException) => {
   if (err.code === 'EADDRINUSE') {

@@ -3,10 +3,8 @@ FROM node:22-bookworm-slim
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
-RUN npm ci
-
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN npm ci
 
 COPY server ./server
 COPY scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
