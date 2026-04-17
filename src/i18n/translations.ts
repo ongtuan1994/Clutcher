@@ -280,8 +280,8 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     'auth.welcomeBack': 'Welcome back',
     'auth.createAccount': 'Create your account',
-    'auth.subLogin': 'Sign in to continue curating your subscriptions.',
-    'auth.subRegister': 'Register to track subscriptions, reconciliation, and your profile.',
+    'auth.subLogin': 'Sign in and open your financial sky—subscriptions, balance, and calm in one view.',
+    'auth.subRegister': 'Create an account to chart subscriptions, reconciliation, and your horizon.',
     'auth.signInTab': 'Sign in',
     'auth.registerTab': 'Register',
     'auth.displayName': 'Display name',
@@ -575,8 +575,8 @@ export const translations: Record<Locale, Record<string, string>> = {
 
     'auth.welcomeBack': 'ยินดีต้อนรับกลับ',
     'auth.createAccount': 'สร้างบัญชี',
-    'auth.subLogin': 'เข้าสู่ระบบเพื่อจัดการ subscription ต่อ',
-    'auth.subRegister': 'ลงทะเบียนเพื่อติดตาม subscription การกระทบยอด และโปรไฟล์',
+    'auth.subLogin': 'เข้าสู่ระบบเพื่อเปิดท้องฟ้าการเงิน—subscription ยอดคงเหลือ และภาพรวมในที่เดียว',
+    'auth.subRegister': 'ลงทะเบียนเพื่อติดตาม subscription การกระทบยอด และขอบฟ้าทางการเงินของคุณ',
     'auth.signInTab': 'เข้าสู่ระบบ',
     'auth.registerTab': 'ลงทะเบียน',
     'auth.displayName': 'ชื่อที่แสดง',

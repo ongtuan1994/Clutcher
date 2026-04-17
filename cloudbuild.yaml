@@ -10,33 +10,27 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - build
-      - '-t'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}:$SHORT_SHA'
-      - '-t'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}:latest'
-      - .
+  # 1. Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-southeast1-docker.pkg.dev/clutcher-saas/clutcher/api:$SHORT_SHA', '.']
 
-  - name: gcr.io/cloud-builders/docker
-    args:
-      - push
-      - '--all-tags'
-      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}'
+  # 2. Push image ไปที่ Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast1-docker.pkg.dev/clutcher-saas/clutcher/api:$SHORT_SHA']
 
-  # Uncomment after Artifact Registry & Cloud Run are configured:
-  # - name: gcr.io/google.com/cloudsdktool/cloud-sdk
-  #   entrypoint: gcloud
-  #   args:
-  #     - run
-  #     - deploy
-  #     - ${_SERVICE}
-  #     - '--image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}:$SHORT_SHA'
-  #     - '--region=${_REGION}'
-  #     - '--platform=managed'
-  #     - '--allow-unauthenticated'
-  #     - '--set-secrets=DATABASE_URL=clutcher-database-url:latest,JWT_SECRET=clutcher-jwt-secret:latest'
+  # 3. Deploy ไปยัง Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'clutcher-api'
+      - '--image=asia-southeast1-docker.pkg.dev/clutcher-saas/clutcher/api:$SHORT_SHA'
+      - '--region=asia-southeast1'
+      - '--service-account=clutcher-api@clutcher-saas.iam.gserviceaccount.com'
+      - '--add-cloudsql-instances=clutcher-saas:asia-southeast1:clutcher-db-instance'
+      - '--set-secrets=DATABASE_URL=clutcher-database-url:latest,JWT_SECRET=clutcher-jwt-secret:latest'
+      - '--set-env-vars=GCS_BUCKET=clutcher-uploads-saas-2026,CORS_ORIGIN=*'
 
 images:
-  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE_NAME}'
+  - 'asia-southeast1-docker.pkg.dev/clutcher-saas/clutcher/api:$SHORT_SHA'

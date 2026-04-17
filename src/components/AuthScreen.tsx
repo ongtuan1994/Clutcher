@@ -42,23 +42,46 @@ export default function AuthScreen() {
   const err = localError;
 
   return (
-    <div className="min-h-screen bg-surface flex items-center justify-center p-6 font-body">
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center p-6 font-body">
+      {/* Sky gradient + horizon */}
+      <div
+        className="absolute inset-0 bg-[linear-gradient(168deg,#0a1628_0%,#0c4a6e_24%,#0369a1_46%,#38bdf8_68%,#bae6fd_88%,#f0f9ff_100%)]"
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amber-100/35"
+        aria-hidden
+      />
+      {/* Soft clouds */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute -top-16 -left-24 h-56 w-[22rem] rounded-full bg-white/30 blur-[48px]" />
+        <div className="absolute top-[18%] -right-16 h-48 w-[20rem] rounded-full bg-white/22 blur-[40px]" />
+        <div className="absolute bottom-[8%] left-[5%] h-40 w-[18rem] rounded-full bg-white/35 blur-[36px]" />
+        <div className="absolute bottom-[20%] right-[8%] h-36 w-80 rounded-full bg-sky-100/50 blur-[32px]" />
+      </div>
+      {/* Sun */}
+      <div
+        className="pointer-events-none absolute top-10 right-[8%] h-28 w-28 rounded-full bg-amber-100/90 blur-sm shadow-[0_0_60px_24px_rgba(253,230,138,0.45)]"
+        aria-hidden
+      />
+
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="relative z-10 w-full max-w-md"
       >
-        <div className="text-center mb-10">
-          <p className="text-xs uppercase tracking-[0.25em] text-on-surface-variant mb-2">{t('brand.clutcher')}</p>
-          <h1 className="text-3xl font-headline font-extrabold text-on-surface tracking-tight">
+        <div className="text-center mb-10 text-white [text-shadow:0_1px_18px_rgba(15,23,42,0.35)]">
+          <p className="text-xs uppercase tracking-[0.25em] text-white/85 mb-1">{t('brand.clutcher')}</p>
+          <p className="text-sm font-medium text-sky-100/95 mb-5">{t('brand.wealthCurator')}</p>
+          <h1 className="text-3xl font-headline font-extrabold tracking-tight">
             {mode === 'login' ? t('auth.welcomeBack') : t('auth.createAccount')}
           </h1>
-          <p className="text-on-surface-variant text-sm mt-2">
+          <p className="text-white/80 text-sm mt-2 max-w-sm mx-auto leading-relaxed">
             {mode === 'login' ? t('auth.subLogin') : t('auth.subRegister')}
           </p>
         </div>
 
-        <div className="bg-white ambient-shadow rounded-2xl p-8 md:p-10 border border-on-surface-variant/5">
+        <div className="rounded-2xl border border-white/40 bg-white/88 backdrop-blur-xl p-8 md:p-10 shadow-[0_24px_48px_-12px_rgba(15,40,70,0.25)]">
           <div className="flex rounded-full bg-surface-container p-1 mb-8">
             <button
               type="button"
@@ -142,9 +165,13 @@ export default function AuthScreen() {
           </form>
         </div>
 
-        <p className="text-center text-xs text-on-surface-variant/60 mt-8">{t('auth.footerNote')}</p>
+        <p className="text-center text-xs text-white/70 mt-8 [text-shadow:0_1px_12px_rgba(15,23,42,0.25)]">
+          {t('auth.footerNote')}
+        </p>
         {mode === 'login' && (
-          <p className="text-center text-xs text-on-surface-variant/75 mt-3 max-w-md mx-auto">{t('auth.demoAdmin')}</p>
+          <p className="text-center text-xs text-white/80 mt-3 max-w-md mx-auto [text-shadow:0_1px_12px_rgba(15,23,42,0.25)]">
+            {t('auth.demoAdmin')}
+          </p>
         )}
       </motion.div>
     </div>
