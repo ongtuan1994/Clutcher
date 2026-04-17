@@ -5,7 +5,7 @@ import { useLocale } from '../contexts/LocaleContext';
 
 export default function AuthScreen() {
   const { login, register } = useAuth();
-  const { t } = useLocale();
+  const { t, locale, setLocale } = useLocale();
   const [mode, setMode] = React.useState<'login' | 'register'>('login');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
@@ -43,6 +43,31 @@ export default function AuthScreen() {
 
   return (
     <div className="relative min-h-screen overflow-hidden flex items-center justify-center p-6 font-body">
+      <div
+        className="fixed top-4 right-4 z-20 flex items-center rounded-full border border-white/35 bg-slate-950/50 p-0.5 text-[11px] font-bold font-headline shadow-[0_8px_24px_rgba(15,23,42,0.35)] backdrop-blur-md"
+        role="group"
+        aria-label="Language"
+      >
+        <button
+          type="button"
+          onClick={() => setLocale('en')}
+          className={`px-3 py-1.5 rounded-full transition-colors ${
+            locale === 'en' ? 'bg-white text-primary shadow-sm' : 'text-white/85 hover:bg-white/10'
+          }`}
+        >
+          {t('lang.en')}
+        </button>
+        <button
+          type="button"
+          onClick={() => setLocale('th')}
+          className={`px-3 py-1.5 rounded-full transition-colors ${
+            locale === 'th' ? 'bg-white text-primary shadow-sm' : 'text-white/85 hover:bg-white/10'
+          }`}
+        >
+          {t('lang.th')}
+        </button>
+      </div>
+
       {/* Sky gradient + horizon */}
       <div
         className="absolute inset-0 bg-[linear-gradient(168deg,#0a1628_0%,#0c4a6e_24%,#0369a1_46%,#38bdf8_68%,#bae6fd_88%,#f0f9ff_100%)]"
